@@ -1,32 +1,61 @@
+// providers/landlord_provider.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:developer' as developer;
 import '../services/landlord_service.dart';
 import '../models/landlord_model.dart';
+import 'base_provider.dart';
 
-final landlordServiceProvider = Provider((_) => LandlordService());
+final landlordServiceProvider = Provider((ref) => LandlordService());
 
-class LandlordNotifier extends AsyncNotifier<List<LandlordModel>> {
+class LandlordNotifier extends AsyncNotifier<List<LandlordModel>> with BaseAsyncNotifier<List<LandlordModel>> {
+  late LandlordService _landlordService;
+
   @override
-  Future<List<LandlordModel>> build() => ref.read(landlordServiceProvider).getAll();
-
-  Future<void> refresh() async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() => ref.read(landlordServiceProvider).getAll());
+  Future<List<LandlordModel>> build() async {
+    _landlordService = ref.read(landlordServiceProvider);
+    return fetchData();
   }
 
-  Future<void> add(LandlordModel l) async {
-    await ref.read(landlordServiceProvider).add(l);
-    await refresh();
+  @override
+  Future<List<LandlordModel>> fetchData() async {
+    try {
+      final landlords = await _landlordService.getAll();
+      developer.log('Fetched ${landlords.length} landlords', name: 'LANDLORD');
+      return landlords;
+    } catch (e) {
+      developer.log('Error fetching landlords: $e', name: 'LANDLORD', error: e);
+      return [];
+    }
   }
 
-  Future<void> updateLandlord(LandlordModel l) async {
-    await ref.read(landlordServiceProvider).update(l);
-    await refresh();
+  Future<bool> add(LandlordModel landlord) async {
+    return safeOperation(() async {
+      await _landlordService.add(landlord);
+    }, 'Add landlord: ${landlord.fullName}');
   }
 
-  Future<void> delete(LandlordModel l) async {
-    await ref.read(landlordServiceProvider).delete(l);
-    await refresh();
+  Future<bool> updateLandlord(LandlordModel landlord) async {
+    return safeOperation(() async {
+      await _landlordService.update(landlord);
+    }, 'Update landlord: ${landlord.fullName}');
+  }
+
+  Future<bool> delete(LandlordModel landlord) async {
+    return safeOperation(() async {
+      await _landlordService.delete(landlord); // Pass entire object
+    }, 'Delete landlord: ${landlord.fullName}');
+  }
+
+  Future<LandlordModel?> getLandlord(int id) async {
+    final allLandlords = state.valueOrNull ?? [];
+    try {
+      return allLandlords.firstWhere((l) => l.id == id);
+    } catch (e) {
+      return null;
+    }
   }
 }
 
-final landlordProvider = AsyncNotifierProvider<LandlordNotifier, List<LandlordModel>>(LandlordNotifier.new);
+final landlordProvider = AsyncNotifierProvider<LandlordNotifier, List<LandlordModel>>(
+  LandlordNotifier.new,
+);

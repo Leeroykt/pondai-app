@@ -1,5 +1,5 @@
 name: pondai_app
-description: "Pondai Housing Management App"
+description: "Pondai Housing Management App - Student Accommodation Management System"
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -10,13 +10,15 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # HTTP
+  # HTTP & Networking
   dio: ^5.7.0
-
+  
   # Local storage / offline
   sqflite: ^2.4.2
   path: ^1.9.1
   shared_preferences: ^2.3.4
+  sqflite_common_ffi: ^2.4.0+3
+  sqflite_common_ffi_web: ^1.1.1
 
   # State management
   flutter_riverpod: ^2.6.1
@@ -30,17 +32,70 @@ dependencies:
   # Connectivity detection
   connectivity_plus: ^6.1.4
 
-  # UI
+  # UUID for local IDs
+  uuid: ^4.5.1
+
+  # UI Components
   cupertino_icons: ^1.0.8
   cached_network_image: ^3.4.1
   shimmer: ^3.0.0
-  sqflite_common_ffi: ^2.4.0+3
-  sqflite_common_ffi_web: ^1.1.1
+  
+  # Date & Time
+  intl: ^0.19.0
+
+  # Image picking (if needed for future features)
+  image_picker: ^1.1.2
+
+  # PDF generation (for reports)
+  pdf: ^3.11.1
+  printing: ^5.13.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.3
+  flutter_native_splash: ^2.4.3
 
 flutter:
   uses-material-design: true
+  
+  # Assets
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/fonts/
+
+  # Fonts
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Inter-ExtraBold.ttf
+          weight: 800
+
+# App Icons Configuration (run: flutter pub run flutter_launcher_icons:main)
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons/app_icon.png"
+  adaptive_icon_background: "#1E293B"
+  adaptive_icon_foreground: "assets/icons/app_icon_foreground.png"
+
+# Splash Screen Configuration (run: flutter pub run flutter_native_splash:create)
+flutter_native_splash:
+  color: "#1E293B"
+  image: "assets/icons/splash_icon.png"
+  android: true
+  ios: true
+  web: true
+  android_gravity: center
+  ios_content_mode: center
+  web_image_mode: center

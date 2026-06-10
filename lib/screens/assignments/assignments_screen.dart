@@ -157,9 +157,19 @@ class AssignmentsScreen extends ConsumerWidget {
       actions: [
         TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
         TextButton(
-          onPressed: () {
-            ref.read(assignmentProvider.notifier).end(a);
-            Navigator.pop(context);
+          onPressed: () async {
+            // Fixed: Use endAssignment instead of end
+            final success = await ref.read(assignmentProvider.notifier).endAssignment(a);
+            if (success && context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Assignment ended successfully'),
+                  backgroundColor: AppColors.success,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
+            if (context.mounted) Navigator.pop(context);
           },
           child: const Text('End', style: TextStyle(color: AppColors.warning)),
         ),
