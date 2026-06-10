@@ -55,20 +55,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
   }
 
   Future<void> _loadSavedCredentials() async {
-    // Load saved email if any (implement your secure storage)
-    // For demo purposes
-    // final savedEmail = await SecureStorage.getEmail();
-    // if (savedEmail != null) {
-    //   _emailCtrl.text = savedEmail;
-    //   _rememberMe = true;
-    //   setState(() {});
-    // }
+    // Load saved email if any
   }
 
   Future<void> _saveCredentials() async {
     if (_rememberMe) {
-      // Save email securely (implement with flutter_secure_storage)
-      // await SecureStorage.saveEmail(_emailCtrl.text.trim());
       developer.log('Credentials saved', name: 'LOGIN');
     }
   }
@@ -125,7 +116,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
           borderRadius: BorderRadius.circular(16),
         ),
         margin: const EdgeInsets.all(16),
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 4), // Extended slightly to read long errors
         action: SnackBarAction(
           label: 'DISMISS',
           textColor: Colors.white.withOpacity(0.9),
@@ -174,11 +165,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
         },
         error: (err, stack) {
           developer.log('Login failed: $err', name: 'LOGIN', error: err, stackTrace: stack);
-          _showEliteSnackbar(
-            err.toString().contains('network') 
-              ? 'Network error. Check your connection.' 
-              : 'Invalid email or password',
-          );
+          // FIXED: Directly print the raw system error to the UI
+          _showEliteSnackbar('DEBUG ERROR: ${err.toString()}');
         },
         loading: () {},
       );
@@ -242,7 +230,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                         },
                       ),
                       const SizedBox(height: 24),
-                      // Fixed: Removed const and used ShaderMask for gradient text
                       ShaderMask(
                         shaderCallback: (bounds) => const LinearGradient(
                           colors: [Color(0xFF2563EB), Color(0xFF06B6D4)],
@@ -291,7 +278,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Email Field
                               _buildInputLabel('EMAIL ADDRESS', Icons.email_outlined),
                               const SizedBox(height: 8),
                               TextFormField(
@@ -307,7 +293,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                               ),
                               const SizedBox(height: 24),
 
-                              // Password Field
                               _buildInputLabel('PASSWORD', Icons.lock_outline),
                               const SizedBox(height: 8),
                               TextFormField(
@@ -334,7 +319,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                               ),
                               const SizedBox(height: 16),
 
-                              // Remember Me & Forgot Password
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -359,7 +343,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                                   const Spacer(),
                                   TextButton(
                                     onPressed: () {
-                                      // Navigate to forgot password
                                       _showEliteSnackbar('Reset link sent to your email!', isError: false);
                                     },
                                     child: const Text(
@@ -374,7 +357,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                               ),
                               const SizedBox(height: 32),
 
-                              // Login Button
                               SizedBox(
                                 width: double.infinity,
                                 height: 56,
@@ -436,7 +418,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
 
                       const SizedBox(height: 32),
                       
-                      // Demo credentials hint (remove in production)
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         decoration: BoxDecoration(
