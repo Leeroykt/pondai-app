@@ -1,15 +1,8 @@
 import 'package:flutter/foundation.dart';
 
 class AppConstants {
-  // Dynamic base URL based on platform
-  static String get baseUrl {
-    if (kIsWeb) {
-      return 'https://pondai-api.onrender.com/api';
-    }
-    // For Android emulator, use 10.0.2.2 for localhost
-    // For physical device, use your computer's IP
-    return 'https://pondai-api.onrender.com/api';
-  }
+  // Fixed compile-time production string constant. This guarantees Dio reads the path correctly on devices!
+  static const String baseUrl = 'https://pondai-api.onrender.com/api';
   
   static const String tokenKey = 'auth_token';
   static const String userKey = 'auth_user';
