@@ -32,7 +32,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
     setState(() => _loading = true);
     
-    // Fire the notifier login call. The ref.listen method below will catch the outcome.
     await ref.read(authProvider.notifier).login(
       _emailCtrl.text.trim(), 
       _passwordCtrl.text.trim(),
@@ -54,7 +53,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // Reacting directly to state emissions catches errors captured by AsyncValue.guard
     ref.listen<AsyncValue<UserModel?>>(authProvider, (previous, next) {
       next.when(
         data: (user) {
@@ -63,7 +61,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           }
         },
         error: (err, stack) {
-          _showError('Invalid email or password or connection failed');
+          // Changed to show the raw, exact system exception message
+          _showError(err.toString());
         },
         loading: () {},
       );
@@ -77,7 +76,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Logo
                 Container(
                   width: 72, height: 72,
                   decoration: BoxDecoration(
@@ -99,7 +97,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   style: TextStyle(fontSize: 13, color: Color(0xFF64748B))),
                 const SizedBox(height: 40),
 
-                // Card
                 Container(
                   padding: const EdgeInsets.all(28),
                   decoration: BoxDecoration(

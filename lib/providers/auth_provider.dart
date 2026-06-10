@@ -12,9 +12,13 @@ class AuthNotifier extends AsyncNotifier<UserModel?> {
 
   Future<void> login(String email, String password) async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(
-      () => ref.read(authServiceProvider).login(email, password)
-    );
+    try {
+      final user = await ref.read(authServiceProvider).login(email, password);
+      state = AsyncData(user);
+    } catch (err, stack) {
+      // Stripping AsyncValue.guard to pass the raw structural error to the UI
+      state = AsyncError(err.toString(), stack);
+    }
   }
 
   Future<void> logout() async {
