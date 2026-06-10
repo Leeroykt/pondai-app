@@ -2,10 +2,7 @@ import 'package:flutter/foundation.dart'; // Required for kIsWeb
 
 class AppConstants {
   // Use localhost for Web/Chrome, and 10.0.2.2 for Android emulators
-  static const String baseUrl = kIsWeb 
-      ? 'http://localhost:3000/api' 
-      : 'http://10.0.2.2:3000/api';
-      
+  static const String baseUrl = 'https://pondai-api.onrender.com/api';
   static const String tokenKey = 'auth_token';
   static const String userKey = 'auth_user';
 
